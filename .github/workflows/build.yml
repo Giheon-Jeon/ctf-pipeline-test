@@ -4,16 +4,39 @@ on:
   push:
     branches: [main]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
-  test:
+  build-and-push:
     runs-on: ubuntu-latest
+
+    # GITHUB_TOKEN에 패키지 쓰기 권한 부여
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: 코드 가져오기
         uses: actions/checkout@v4
 
-      - name: 첫 번째 테스트
-        run: echo "🎉 GitHub Actions가 동작한다!"
+      - name: GHCR 로그인
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 파일 목록 확인
-        run: ls -al
+      - name: 이미지 빌드 및 push
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: digest 출력
+        run: |
+          echo "이미지 digest: ${{ steps.build.outputs.digest }}"
+          echo "commit: ${{ github.sha }}"
