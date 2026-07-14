@@ -2,11 +2,11 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# 베이스 이미지의 취약 패키지 업그레이드
-RUN pip install --upgrade "jaraco.context>=6.1.0" "wheel>=0.46.2"
-
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+
+# 런타임에 불필요한 빌드 도구 제거 (vendored 취약점 제거 + 공격 표면 감소)
+RUN pip uninstall -y setuptools wheel
 
 COPY app.py .
 
