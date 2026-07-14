@@ -1,0 +1,19 @@
+name: Build Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: 첫 번째 테스트
+        run: echo "🎉 GitHub Actions가 동작한다!"
+
+      - name: 파일 목록 확인
+        run: ls -al
