@@ -3,7 +3,7 @@ name: Django CD Pipeline
 on:
   push:
     branches: [ "main" ]
-  # 배포 서버가 준비되기 전까지 deploy 잡은 수동 실행(workflow_dispatch)으로만 동작
+  # 배포 서버가 준비되기 전까지 deploy 잡은 수동 실행(workflow_dispatch)으로만 동작.
   workflow_dispatch:
 
 jobs:
