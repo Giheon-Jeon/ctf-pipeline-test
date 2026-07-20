@@ -3,6 +3,8 @@ name: Django CD Pipeline
 on:
   push:
     branches: [ "main" ]
+  # 배포 서버가 준비되기 전까지 deploy 잡은 수동 실행(workflow_dispatch)으로만 동작
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -40,6 +42,9 @@ jobs:
 
   deploy:
     needs: build-and-push
+    # 배포 서버(DEPLOY_* Secrets)가 준비되기 전까지는 push 시 스킵되고,
+    # Actions 탭에서 수동 실행(workflow_dispatch)했을 때만 동작
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
